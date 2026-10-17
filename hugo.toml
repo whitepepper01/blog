@@ -74,8 +74,13 @@ pygmentsUseClasses = true
   showtoc = true
   comments = false
 
+  [params.label]
+    text = "whitepepper01"
+    icon = "images/rabbit-8bit.png"
+    iconHeight = 34
+
   [params.homeInfoParams]
-    Title = "whitepepper01 \U0001F977"
+    Title = "whitepepper01"
     Content = "Pentest & CTF writeups, OSCP grind notes — plus fitness, training, music, and life. Latest posts below."
 
   [[params.socialIcons]]

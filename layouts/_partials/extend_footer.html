@@ -1,0 +1,73 @@
+{{- $waves := slice "images/wave-back.svg" "images/wave-mid.svg" "images/wave-front.svg" }}
+<div id="wp-ocean" aria-hidden="true">
+  {{- range $i := seq 0 9 }}
+  {{- $src := index $waves (mod $i 3) }}
+  <div class="wp-wave r{{ $i }}{{ if eq (mod $i 2) 1 }} rev{{ end }}" style="top:calc({{ mul $i 11 }}vh - 60px);background-image:url('{{ $src | relURL }}');animation-duration:{{ add 7 (mod (mul $i 5) 9) }}s;background-size:{{ index (slice 640 512 768) (mod $i 3) }}px 200px"></div>
+  {{- end }}
+</div>
+<div id="wp-ship" class="wp-sprite" aria-hidden="true"><div class="wp-flip"><img class="wp-ship-bob" src="{{ "images/ship.svg" | relURL }}" alt=""></div></div>
+<div id="wp-rabbit" class="wp-sprite" aria-hidden="true"><div class="wp-flip"><img class="wp-rabbit-hop" src="{{ "images/pixel-rabbit.svg" | relURL }}" alt=""></div></div>
+
+<script>
+(function () {
+  /* ---- typewriter ---- */
+  var el = document.getElementById('wp-type');
+  if (el) {
+    var phrases = ["Cybersecurity","Active Directory","Enumerate","Privilege Escalation",
+      "Kerberos","Payloads","Reverse Shell","Shell","Linux","Windows","DLL","Null","Bytes","Bash","Python",
+      "Hardcore","Gabber","Jazz","R and B","Country","Shoegaze","Guitar","Music","Love",
+      "Consistency","Discipline","Growth","Strength"];
+    var pi=0, ci=0, deleting=false;
+    (function tick(){
+      var w=phrases[pi];
+      if(!deleting){ ci++; el.textContent=w.slice(0,ci);
+        if(ci===w.length){ deleting=true; return setTimeout(tick,1100);} return setTimeout(tick,75);
+      } else { ci--; el.textContent=w.slice(0,ci);
+        if(ci===0){ deleting=false; pi=(pi+1)%phrases.length; return setTimeout(tick,350);} return setTimeout(tick,40);
+      }
+    })();
+  }
+
+  /* ---- random 2D wanderers (sailboat + rabbit) ---- */
+  if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  function rand(a,b){ return a + Math.random()*(b-a); }
+  function wander(node, o){
+    if (!node) return;
+    var flip = node.querySelector('.wp-flip');
+    var W = function(){ return window.innerWidth; }, H = function(){ return window.innerHeight; };
+    var x = rand(0, W()-o.w), y = rand(o.minY, H()-o.h);
+    node.style.transform = 'translate('+x+'px,'+y+'px)';
+    function step(){
+      var nx, ny;
+      /* random pattern: short nearby moves or long trips across the screen */
+      if (Math.random() < o.shortChance) {
+        nx = x + rand(-o.shortLen, o.shortLen); ny = y + rand(-o.shortLen*0.6, o.shortLen*0.6);
+      } else {
+        nx = rand(0, W()-o.w); ny = rand(o.minY, H()-o.h);
+      }
+      nx = Math.min(Math.max(nx, 0), W()-o.w); ny = Math.min(Math.max(ny, o.minY), H()-o.h);
+      var dx = nx-x, dy = ny-y, dist = Math.sqrt(dx*dx+dy*dy) || 1;
+      var speed = rand(o.minSpeed, o.maxSpeed);
+      var dur = Math.max(0.6, dist/speed);
+      if (Math.abs(dx) > 3) flip.style.transform = (dx < 0) === o.facesLeft ? 'scaleX(1)' : 'scaleX(-1)';
+      if (o.hop) node.style.setProperty('--hop-t', rand(0.28, 0.6).toFixed(2)+'s');
+      if (o.hop) node.style.setProperty('--hop-h', (-rand(12, 30)).toFixed(0)+'px');
+      node.classList.add('moving');
+      node.style.transition = 'transform '+dur.toFixed(2)+'s '+o.ease;
+      node.style.transform = 'translate('+nx+'px,'+ny+'px)';
+      x = nx; y = ny;
+      setTimeout(function(){
+        node.classList.remove('moving');
+        setTimeout(step, rand(o.minPause, o.maxPause));
+      }, dur*1000);
+    }
+    setTimeout(step, rand(300, 1500));
+  }
+  wander(document.getElementById('wp-ship'),
+    { w:160, h:105, minY:60, facesLeft:true, hop:false, ease:'ease-in-out',
+      minSpeed:25, maxSpeed:70, minPause:500, maxPause:3500, shortChance:0.35, shortLen:220 });
+  wander(document.getElementById('wp-rabbit'),
+    { w:72, h:56, minY:60, facesLeft:false, hop:true, ease:'linear',
+      minSpeed:70, maxSpeed:260, minPause:250, maxPause:4000, shortChance:0.5, shortLen:160 });
+})();
+</script>

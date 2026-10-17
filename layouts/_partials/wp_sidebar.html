@@ -1,0 +1,33 @@
+{{- $posts := where site.RegularPages "Type" "posts" }}
+<aside class="wp-side" aria-label="Sidebar">
+  <section class="wp-box">
+    <div class="wp-box-title">[ whoami ]</div>
+    <div class="wp-who">
+      <img class="wp-avatar" src="{{ "images/rabbit-8bit.png" | relURL }}" alt="whitepepper01 avatar" width="64" height="64">
+      <pre class="wp-kv">handle : <b>whitepepper01</b>
+role   : aspiring pentester
+also   : lifter, music enjoyer
+posts  : {{ len $posts }}
+tags   : {{ len site.Taxonomies.tags }}</pre>
+    </div>
+    <div class="wp-box-links"><a href="https://github.com/whitepepper01" target="_blank" rel="noopener">&gt; github</a> <a href="{{ "about/" | relURL }}">&gt; about</a> <a href="{{ "index.xml" | relURL }}">&gt; rss</a></div>
+  </section>
+
+  <section class="wp-box">
+    <div class="wp-box-title">[ /etc/motd ]</div>
+    <p class="wp-motd">HackSmarter / HTB / THM writeups, OSCP grind notes, training logs and whatever I'm listening to.</p>
+  </section>
+
+  <section class="wp-box">
+    <div class="wp-box-title">[ recent posts ]</div>
+    <ol class="wp-recent">
+      {{- $total := len $posts }}
+      {{- range $i, $p := first 8 $posts.ByDate.Reverse }}
+      <li>
+        <a href="{{ $p.Permalink }}"><span class="wp-rnum">&gt;</span> <span class="wp-rtitle">{{ $p.Title }}</span></a>
+        <span class="wp-date">{{ $p.Date.Format "2006-01-02" }}</span>
+      </li>
+      {{- end }}
+    </ol>
+  </section>
+</aside>

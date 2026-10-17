@@ -1,0 +1,18 @@
+{{- with site.Params.homeInfoParams }}
+<article class="first-entry home-info wp-hero">
+    <div class="wp-term">
+        <div class="wp-term-line"><span class="wp-prompt">root@pepper:~#</span> whoami</div>
+        <h1 class="wp-handle">whitepepper01</h1>
+        <div id="wp-type-wrap"><span class="wp-prompt">root@pepper:~#&nbsp;</span><span id="wp-type"></span><span id="wp-cursor">&nbsp;</span></div>
+    </div>
+    <div class="entry-content md-content">
+        {{ $opts := dict "display" "block" }}
+        {{ .Content | $.Page.RenderString $opts }}
+    </div>
+    <div class="wp-links">
+        <a href="{{ "posts/" | relURL }}">[ writeups ]</a>
+        <a href="{{ "about/" | relURL }}">[ about ]</a>
+        <a href="{{ "tags/" | relURL }}">[ tags ]</a>
+    </div>
+</article>
+{{- end -}}
