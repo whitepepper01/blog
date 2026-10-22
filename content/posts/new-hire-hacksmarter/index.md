@@ -4,6 +4,10 @@ date: 2026-10-21T15:30:00-07:00
 draft: false
 tags: ["hacksmarter", "windows", "smb", "keepass", "mssql", "xp-cmdshell", "seimpersonate", "godpotato", "ligolo", "privilege-escalation", "oscp", "writeup"]
 categories: ["Writeups"]
+cover:
+  image: "cover.jpg"
+  relative: true
+  alt: "Sarah Davachi — The Will of Tongues album cover"
 ShowToc: true
 TocOpen: false
 summary: "A HackSmarter Windows box: SMB enumeration, a cracked KeePass database, a password spray, then a pivot to a local MSSQL instance and SeImpersonate to SYSTEM. Plus five tracks I've been enjoying this year."
