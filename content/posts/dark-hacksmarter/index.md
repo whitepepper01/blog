@@ -1,6 +1,6 @@
 ---
 title: "Dark (HackSmarter), and an album to listen to"
-date: 2026-10-25T12:30:00-07:00
+date: 2026-10-25T10:00:00-07:00
 draft: false
 tags: ["hacksmarter", "linux", "wordpress", "docker", "plugin", "privilege-escalation", "ligolo", "mysql", "oscp", "writeup"]
 categories: ["Writeups"]
