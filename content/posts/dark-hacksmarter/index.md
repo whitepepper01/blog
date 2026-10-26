@@ -294,16 +294,3 @@ docker run -v /:/mnt --rm -it alpine chroot /mnt /bin/bash
 Wow — and just like that, you're root!
 
 Go and find that flag.
-
-## Lessons Learned
-
-A few things I want to remember from this box:
-
-- **Check groups early.** `www-data` being in `docker` was the whole privilege-escalation path. I burned a lot of time on DB hash cracking first. `id` / `groups` should be near the top of the post-foothold checklist, every time.
-- **Outdated WordPress plugins are worth Googling by name + version.** Modular Connector `2.5.0` didn't show up in searchsploit for me, but a public CVE write-up was enough once I actually read the unauthenticated login step carefully.
-- **HTTP vs HTTPS matters on lab boxes.** The Modular Connector path only worked over HTTP; I wasted time on TLS.
-- **Editable plugins = code exec** once you're in WP admin. Classic, and it worked here.
-- **Ligolo is great for reaching localhost services** (MySQL on 3306) from a low shell — just don't let the pivot become the whole rabbit hole when a local privesc check would have finished the box.
-- **Ask for help, then write it down honestly.** I needed 0xb0b / the CVE write-up for the foothold, and a write-up again for the docker-group escape. That's fine. The point of these posts is to remember what I missed.
-
-Needed quite a bit of help here. Maybe one day we'll just be able to do this on our own.
