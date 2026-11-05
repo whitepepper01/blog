@@ -1,6 +1,6 @@
 ---
 title: "Lockpicking and failing Easy boxes..."
-date: 2026-11-05T00:15:00-08:00
+date: 2026-11-05T00:05:00-08:00
 tags: ["lockpicking", "update", "music", "ween"]
 categories: ["Updates"]
 cover:
