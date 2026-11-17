@@ -134,8 +134,6 @@ Default passwords for new accounts?
 
 Looks like a potential password spray.
 
-LDAP doesn’t seem to be working, how can we find more users?
-
 WinRM and RDP look like they don’t work for initial user.
 
 ![welcome-04](welcome-04.png)
