@@ -13,8 +13,6 @@ TocOpen: false
 summary: "We got creds from a social engineering engagement, our objective is to get to the administrator's directory!"
 ---
 
-![Slayer-01-desktop](Slayer-01-desktop.png)
-
 Today we have a Windows standalone machine!
 
 ![Slayer-02-objective](Slayer-02-objective.png)
