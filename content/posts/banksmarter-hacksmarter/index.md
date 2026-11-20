@@ -1,5 +1,5 @@
 ---
-title: "BankSmarter, Streaks, and Sepultra"
+title: "BankSmarter, Streaks, and Sepultura"
 date: 2026-11-19T10:00:00-08:00
 draft: false
 tags: ["hacksmarter", "linux", "snmp", "snmpwalk", "udp", "privilege-escalation", "suid", "socat", "unix-socket", "path-hijacking", "pspy", "oscp", "writeup"]
@@ -15,7 +15,7 @@ summary: "A HackSmarter Linux box I learned a lot on - SNMP credentials for a fo
 
 ## Music
 
-Today's album is *Schizophrenia* from Sepultra. I know Sepultra is super popular but I never gave their early stuff a try. My buddy Tyler was talking about them the other day, and I decided to give this full album a listen.
+Today's album is *Schizophrenia* from Sepultura. I know Sepultura is super popular but I never gave their early stuff a try. My buddy Tyler was talking about them the other day, and I decided to give this full album a listen.
 
 Of course, I listened to it all the way through. It is so good! Not a single skip, not a single moment of waiting for the next song to start. Just taking it all in. 
 
